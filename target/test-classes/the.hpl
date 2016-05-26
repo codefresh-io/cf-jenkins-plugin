@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Group-Id: io.codefresh
+Short-Name: jenkins2cf
+Long-Name: jenkins2cf
+Url: http://jenkins-ci.org/plugin/jenkins2cf/
+Plugin-Version: 1.0-SNAPSHOT (private-05/26/2016 15:53-antweiss)
+Hudson-Version: 1.645
+Jenkins-Version: 1.645
+Plugin-Developers: 
+Libraries: /Users/antweiss/NetBeansProjects/jenkins2cf/src/main/resour
+ ces,/Users/antweiss/NetBeansProjects/jenkins2cf/target/classes,/Users
+ /antweiss/.m2/repository/org/restlet/org.restlet.ext.velocity/1.1.5/o
+ rg.restlet.ext.velocity-1.1.5.jar,/Users/antweiss/.m2/repository/com/
+ noelios/restlet/com.noelios.restlet/1.1.5/com.noelios.restlet-1.1.5.j
+ ar,/Users/antweiss/.m2/repository/oro/oro/2.0.8/oro-2.0.8.jar,/Users/
+ antweiss/.m2/repository/org/restlet/org.restlet/1.1.5/org.restlet-1.1
+ .5.jar,/Users/antweiss/.m2/repository/com/sun/jersey/jersey-client/1.
+ 12/jersey-client-1.12.jar,/Users/antweiss/.m2/repository/org/apache/v
+ elocity/velocity/1.5/velocity-1.5.jar,/Users/antweiss/.m2/repository/
+ com/sun/jersey/jersey-core/1.12/jersey-core-1.12.jar
+Resource-Path: /Users/antweiss/NetBeansProjects/jenkins2cf/src/main/we
+ bapp
+

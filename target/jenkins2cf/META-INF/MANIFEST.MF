@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Built-By: antweiss
+Created-By: Apache Maven
+Build-Jdk: 1.8.0_05
+Extension-Name: jenkins2cf
+Implementation-Title: jenkins2cf
+Implementation-Version: 1.0-SNAPSHOT
+Group-Id: io.codefresh
+Short-Name: jenkins2cf
+Long-Name: jenkins2cf
+Url: http://jenkins-ci.org/plugin/jenkins2cf/
+Plugin-Version: 1.0-SNAPSHOT (private-05/26/2016 15:54-antweiss)
+Hudson-Version: 1.645
+Jenkins-Version: 1.645
+Plugin-Developers: 
+
