@@ -22,7 +22,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import  org.apache.commons.httpclient.protocol.*;
 import javax.net.ssl.*;
-
+import java.net.URL;
+import java.io.*;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import javax.net.ssl.HttpsURLConnection;
 //import org.restlet.ext.json.JsonRepresentation;
 
 /**
@@ -63,19 +67,48 @@ public class CodefreshBuilder extends Builder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
 
-         DefaultHttpClient httpclient = new DefaultHttpClient();
-           HttpPost httpost = new HttpPost("https://g.codefresh.io/api/builds/571c8058b3a58f06001d28a1");
-           httpost.addHeader("x-access-token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzciLCJhY2NvdW50SWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzgiLCJpYXQiOjE0NjExNTUwNjAsImV4cCI6MTQ2Mzc0NzA2MH0.LYDHyMK8eanWFczgV15GaXIpqenA3_GzeWE76ZNtBKE");
-           HttpResponse response = httpclient.execute(httpost);
-        HttpEntity entity = response.getEntity();
+    TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
+    public X509Certificate[] getAcceptedIssuers(){return null;}
+    public void checkClientTrusted(X509Certificate[] certs, String authType){}
+    public void checkServerTrusted(X509Certificate[] certs, String authType){}
+}};
 
-       
-        if (entity != null) {
-            entity.consumeContent();
-        }
+// Install the all-trusting trust manager
+try {
+    SSLContext sc = SSLContext.getInstance("TLS");
+    sc.init(null, trustAllCerts, new SecureRandom());
+    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+} catch (Exception e) {
+    ;
+}    
+    String httpsURL = "https://g.codefresh.io/api/builds/571c8058b3a58f06001d28a1";
+    URL myurl = new URL(httpsURL);
+    HttpsURLConnection con = (HttpsURLConnection)myurl.openConnection();
+    con.setRequestMethod("POST");
+     con.setUseCaches(false);
+            con.setDoOutput(true);
+            con.setDoInput(true);
+
+            con.setFollowRedirects(true);
+            con.setInstanceFollowRedirects(true);
+    con.setRequestProperty("x-access-token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzciLCJhY2NvdW50SWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzgiLCJpYXQiOjE0NjQyNzk1OTgsImV4cCI6MTQ2Njg3MTU5OH0.gTI_1PDjxa7VO3Aq1Ta5fGvElmETwpyPnuvUCmC4-qg");
+    
+    OutputStreamWriter outs = new OutputStreamWriter(con.getOutputStream());
+    outs.write("");
+    outs.flush();
+    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                listener.getLogger().println(inputLine);
+
+            }
+            outs.close();
+            in.close();
+//    InputStreamReader isr = new InputStreamReader(ins);
+//    BufferedReader in = new BufferedReader(isr);
  
-            listener.getLogger().println(response.getStatusLine());
-
+    
+            
 
         return true;
     }
