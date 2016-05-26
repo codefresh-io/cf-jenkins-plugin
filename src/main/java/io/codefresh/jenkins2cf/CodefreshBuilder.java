@@ -16,11 +16,13 @@ import org.restlet.Client;
 import org.restlet.data.Protocol;
 import java.io.IOException;
 import java.util.Map;
-import org.restlet.data.Form;
-import org.restlet.data.Method;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.util.Engine;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import  org.apache.commons.httpclient.protocol.*;
+import javax.net.ssl.*;
+
 //import org.restlet.ext.json.JsonRepresentation;
 
 /**
@@ -59,29 +61,21 @@ public class CodefreshBuilder extends Builder {
     }
 
     @Override
-    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
 
-           Client client = new Client(Protocol.HTTP);
+         DefaultHttpClient httpclient = new DefaultHttpClient();
+           HttpPost httpost = new HttpPost("https://g.codefresh.io/api/builds/571c8058b3a58f06001d28a1");
+           httpost.addHeader("x-access-token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzciLCJhY2NvdW50SWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzgiLCJpYXQiOjE0NjExNTUwNjAsImV4cCI6MTQ2Mzc0NzA2MH0.LYDHyMK8eanWFczgV15GaXIpqenA3_GzeWE76ZNtBKE");
+           HttpResponse response = httpclient.execute(httpost);
+        HttpEntity entity = response.getEntity();
 
-            Request request = new Request (Method.GET, "https://g.codefresh.io/api/builds/571c8058b3a58f06001d28a1" );
+       
+        if (entity != null) {
+            entity.consumeContent();
+        }
+ 
+            listener.getLogger().println(response.getStatusLine());
 
-            final String RESTLET_HTTP_HEADERS = "org.restlet.http.headers";
-
-            Map<String, Object> reqAttribs = request.getAttributes();
-            Form headers = (Form)reqAttribs.get(RESTLET_HTTP_HEADERS);
-            if (headers == null) {
-                headers = new Form();
-                reqAttribs.put(RESTLET_HTTP_HEADERS, headers);
-            }
-            headers.add("x-access-token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzciLCJhY2NvdW50SWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzgiLCJpYXQiOjE0NjExNTUwNjAsImV4cCI6MTQ2Mzc0NzA2MH0.LYDHyMK8eanWFczgV15GaXIpqenA3_GzeWE76ZNtBKE");
-
-            request.getClientInfo().setAgent("myAgent");
-
-            Response r = client.handle(request);
-
-            listener.getLogger().println("\nJSON representation");
-
-            listener.getLogger().println(r.getEntity());
 
         return true;
     }

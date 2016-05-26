@@ -1,5 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<io.codefresh.jenkins2cf.CodefreshBuilder_-DescriptorImpl plugin="jenkins2cf@1.0-SNAPSHOT">
-  <cfUser>anton</cfUser>
-  <cfToken>zp4QElSMzW8sOIn1YiV2y0qsEAk2Lw/oMErmqRTErtM=</cfToken>
-</io.codefresh.jenkins2cf.CodefreshBuilder_-DescriptorImpl>
