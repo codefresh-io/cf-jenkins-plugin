@@ -49,12 +49,13 @@ import javax.net.ssl.HttpsURLConnection;
 public class CodefreshBuilder extends Builder {
 
     private final boolean launch;
+    private final String service;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public CodefreshBuilder(Boolean launch) {
+    public CodefreshBuilder(String service, Boolean launch) {
         this.launch = launch;
-
+        this.service = service;
     }
 
     /**
@@ -64,51 +65,39 @@ public class CodefreshBuilder extends Builder {
         return launch;
     }
 
+    public String getService() {
+        return service;
+    }
+
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
 
-    TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
-    public X509Certificate[] getAcceptedIssuers(){return null;}
-    public void checkClientTrusted(X509Certificate[] certs, String authType){}
-    public void checkServerTrusted(X509Certificate[] certs, String authType){}
-}};
+    // temporarily ignore cert check
+    // TODO : trust specifically Codefresh's cert
+//    TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
+//        public X509Certificate[] getAcceptedIssuers(){return null;}
+//        public void checkClientTrusted(X509Certificate[] certs, String authType){}
+//        public void checkServerTrusted(X509Certificate[] certs, String authType){}
+//    }};
+//
+//    // Install the all-trusting trust manager
+//    try {
+//        SSLContext sc = SSLContext.getInstance("TLS");
+//        sc.init(null, trustAllCerts, new SecureRandom());
+//        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+//    } catch (Exception e) {
+//        ;
+//    }
+        CFProfile = new CFProfile(token);
+  }
 
-// Install the all-trusting trust manager
-try {
-    SSLContext sc = SSLContext.getInstance("TLS");
-    sc.init(null, trustAllCerts, new SecureRandom());
-    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-} catch (Exception e) {
-    ;
-}    
-    String httpsURL = "https://g.codefresh.io/api/builds/571c8058b3a58f06001d28a1";
-    URL myurl = new URL(httpsURL);
-    HttpsURLConnection con = (HttpsURLConnection)myurl.openConnection();
-    con.setRequestMethod("POST");
-     con.setUseCaches(false);
-            con.setDoOutput(true);
-            con.setDoInput(true);
-
-            con.setFollowRedirects(true);
-            con.setInstanceFollowRedirects(true);
-    con.setRequestProperty("x-access-token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzciLCJhY2NvdW50SWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzgiLCJpYXQiOjE0NjQyNzk1OTgsImV4cCI6MTQ2Njg3MTU5OH0.gTI_1PDjxa7VO3Aq1Ta5fGvElmETwpyPnuvUCmC4-qg");
+  //  con.setRequestProperty("x-access-token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzciLCJhY2NvdW50SWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzgiLCJpYXQiOjE0NjQyNzk1OTgsImV4cCI6MTQ2Njg3MTU5OH0.gTI_1PDjxa7VO3Aq1Ta5fGvElmETwpyPnuvUCmC4-qg");
     
-    OutputStreamWriter outs = new OutputStreamWriter(con.getOutputStream());
-    outs.write("");
-    outs.flush();
-    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                listener.getLogger().println(inputLine);
-
-            }
-            outs.close();
-            in.close();
 //    InputStreamReader isr = new InputStreamReader(ins);
 //    BufferedReader in = new BufferedReader(isr);
- 
-    
-            
+
+
+
 
         return true;
     }
@@ -183,13 +172,9 @@ try {
             return super.configure(req,formData);
         }
 
-        /**
-         * This method returns true if the global configuration says we should speak French.
-         *
-         * The method name is bit awkward because global.jelly calls this method to determine
-         * the initial state of the checkbox by the naming convention.
-         * @return
-         */
+        public List<String> getServices(){
+
+        }
         public String getCfUser() {
             return cfUser;
         }
@@ -197,5 +182,13 @@ try {
         public Secret getCfToken() {
             return cfToken;
         }
+        public ListBoxModel doFillServiceNameItems() {
+            ListBoxModel items = new ListBoxModel();
+            for (String service : getServices()) {
+                items.add(service);
+            }
+            return items;
+        }
+
     }
 }
