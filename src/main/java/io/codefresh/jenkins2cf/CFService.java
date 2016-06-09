@@ -5,6 +5,14 @@
  */
 package io.codefresh.jenkins2cf;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import hudson.util.Secret;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import javax.net.ssl.HttpsURLConnection;
+
 /**
  *
  * @author antweiss
@@ -24,6 +32,21 @@ public class CFService {
 
     public String getId() {
         return id;
+    }
+    
+    public String newBuild(Secret token) throws IOException
+    {
+        String httpsURL = "https://g.codefresh.io/api/builds" + id ;
+        CFApi api =  new CFApi(token, httpsURL);
+        HttpsURLConnection conn = api.getConnection();
+        conn.setRequestMethod("POST");
+    
+        OutputStreamWriter outs = new OutputStreamWriter(conn.getOutputStream());
+        outs.write("");
+        outs.flush();
+
+        InputStream is = conn.getInputStream();
+        return is.toString();
     }
     
 }

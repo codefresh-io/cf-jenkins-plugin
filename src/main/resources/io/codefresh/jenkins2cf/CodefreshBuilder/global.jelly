@@ -21,5 +21,9 @@
       description="Enter Codefresh authorization token">
       <f:textbox />
     </f:entry>
+     <f:entry title="Repo" field="cfRepoName"
+      description="Enter repository name">
+      <f:textbox />
+    </f:entry>
   </f:section>
 </j:jelly>

@@ -27,7 +27,7 @@ import javax.net.ssl.X509TrustManager;
  */
 public class CFApi {
     
-    private final SSLSocketFactory sf;
+    private SSLSocketFactory sf = null;
     private HttpsURLConnection conn;
     private URL myURL;
     

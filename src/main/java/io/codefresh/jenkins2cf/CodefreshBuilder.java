@@ -7,6 +7,7 @@ import hudson.model.BuildListener;
 import hudson.model.AbstractProject;
 import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
+import hudson.util.ListBoxModel;
 import hudson.util.Secret;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -72,35 +73,11 @@ public class CodefreshBuilder extends Builder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
 
-    // temporarily ignore cert check
-    // TODO : trust specifically Codefresh's cert
-//    TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager(){
-//        public X509Certificate[] getAcceptedIssuers(){return null;}
-//        public void checkClientTrusted(X509Certificate[] certs, String authType){}
-//        public void checkServerTrusted(X509Certificate[] certs, String authType){}
-//    }};
-//
-//    // Install the all-trusting trust manager
-//    try {
-//        SSLContext sc = SSLContext.getInstance("TLS");
-//        sc.init(null, trustAllCerts, new SecureRandom());
-//        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-//    } catch (Exception e) {
-//        ;
-//    }
-        CFProfile = new CFProfile(token);
+      CFProfile profile  = new CFProfile(getDescriptor().getCfUser(), getDescriptor().getCfToken(), getDescriptor().getRepoName());
+      CFService service = profile.getService();
+      String buildId = service.newBuild(this.getDescriptor().getCfToken());
+      return true;
   }
-
-  //  con.setRequestProperty("x-access-token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzciLCJhY2NvdW50SWQiOiI1NmVlOGYwY2FiNzkwYjA2MDAyODEzYzgiLCJpYXQiOjE0NjQyNzk1OTgsImV4cCI6MTQ2Njg3MTU5OH0.gTI_1PDjxa7VO3Aq1Ta5fGvElmETwpyPnuvUCmC4-qg");
-    
-//    InputStreamReader isr = new InputStreamReader(ins);
-//    BufferedReader in = new BufferedReader(isr);
-
-
-
-
-        return true;
-    }
 
     // Overridden for better type safety.
     // If your plugin doesn't really define any property on Descriptor,
@@ -129,6 +106,8 @@ public class CodefreshBuilder extends Builder {
          */
         private String cfUser;
         private Secret cfToken;
+        private String cfService;
+        private String cfRepoName;
 
         /**
          * Performs on-the-fly validation of the form field 'name'.
@@ -165,6 +144,7 @@ public class CodefreshBuilder extends Builder {
             // set that to properties and call save().
             cfUser = formData.getString("cfUser");
             cfToken = Secret.fromString(formData.getString("cfToken"));
+            cfRepoName = formData.getString("cfRepoName");
 
             // ^Can also use req.bindJSON(this, formData);
             //  (easier when there are many fields; need set* methods for this, like setUseFrench)
@@ -172,21 +152,26 @@ public class CodefreshBuilder extends Builder {
             return super.configure(req,formData);
         }
 
-        public List<String> getServices(){
-
-        }
+        
         public String getCfUser() {
             return cfUser;
         }
 
+         public String getCfService() {
+            return cfService;
+        }
+        
+        public String getRepoName() {
+            return cfRepoName;
+        }
         public Secret getCfToken() {
             return cfToken;
         }
         public ListBoxModel doFillServiceNameItems() {
             ListBoxModel items = new ListBoxModel();
-            for (String service : getServices()) {
-                items.add(service);
-            }
+         //   CFProfile profile = new CFProfile(cfUser,cfToken,cfRepoName);
+            
+            items.add(cfRepoName);
             return items;
         }
 
