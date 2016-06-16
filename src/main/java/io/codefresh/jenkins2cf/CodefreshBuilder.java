@@ -1,7 +1,6 @@
 package io.codefresh.jenkins2cf;
 import hudson.Launcher;
 import hudson.Extension;
-import hudson.util.FormValidation;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.AbstractProject;
@@ -12,22 +11,7 @@ import hudson.util.Secret;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.QueryParameter;
-import org.restlet.Client;
-import org.restlet.data.Protocol;
 import java.io.IOException;
-import java.util.Map;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import  org.apache.commons.httpclient.protocol.*;
-import javax.net.ssl.*;
-import java.net.URL;
-import java.io.*;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import javax.net.ssl.HttpsURLConnection;
 //import org.restlet.ext.json.JsonRepresentation;
 
 /**
@@ -73,9 +57,9 @@ public class CodefreshBuilder extends Builder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
 
-      CFProfile profile  = new CFProfile(getDescriptor().getCfUser(), getDescriptor().getCfToken(), getDescriptor().getRepoName());
-      CFService service = profile.getService();
-      String buildId = service.newBuild(this.getDescriptor().getCfToken());
+      CFProfile profile  = new CFProfile(getDescriptor().getCfUser(), getDescriptor().getCfToken());
+      CFService service = new CFService(profile, get.Descriptor.getRepo());
+      String buildId = service.newBuild();
       return true;
   }
 

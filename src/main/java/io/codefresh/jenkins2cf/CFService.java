@@ -5,8 +5,6 @@
  */
 package io.codefresh.jenkins2cf;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import hudson.util.Secret;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +19,7 @@ public class CFService {
     private String name;
     private String id;
 
-    public CFService(String name, String id) {
+    public CFService(CFProfile profile, String gitRepo) {
         this.name = name;
         this.id = id;
     }
